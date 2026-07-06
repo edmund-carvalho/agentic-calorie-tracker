@@ -11,6 +11,11 @@ from google.adk.tools import FunctionTool
 from google.genai import types
 from datetime import datetime
 
+import warnings
+# Silence specific warning categories
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
+
 # Load environment variables
 load_dotenv()
 
@@ -86,7 +91,10 @@ os.environ["GOOGLE_API_KEY"] = get_api_key()
 # ==================== IMPORT TOOLS ====================
 
 from tools.calorie_tools import load_user_profile, calculate_tdee
-from tools.tracking_tools import load_data, track_meal, save_data, DAILY_LOG
+from tools.tracking_tools import (
+    load_data, track_meal, track_multiple_meals, 
+    save_data, DAILY_LOG, get_todays_log
+)
 from tools.analytics_tools import (
     get_daily_summary, get_weekly_summary,
     get_weight_progress, suggest_swap
@@ -103,16 +111,22 @@ food_estimator = Agent(
     model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
     instruction="""Parse the user's meal description and estimate calories for each item.
 
-Return JSON only with this structure:
-{"meal_type": "breakfast|lunch|tea|dinner|snack", "items": [{"name": "food item", "calories": estimated_calories}]}
+Return a SINGLE JSON array with all meals. Do NOT return multiple separate JSON objects.
 
-Be as accurate as possible with your estimates.
+Format:
+[
+    {"meal_type": "breakfast|lunch|tea|dinner|snack", "items": [{"name": "food item", "calories": estimated_calories}]},
+    {"meal_type": "lunch", "items": [{"name": "food item", "calories": estimated_calories}]}
+]
 
 Examples:
-- "I had coffee and 2 boiled eggs for breakfast" -> {"meal_type": "breakfast", "items": [{"name": "coffee", "calories": 110}, {"name": "boiled egg", "calories": 80}, {"name": "boiled egg", "calories": 80}]}
-- "lunch was chicken pulao with salad" -> {"meal_type": "lunch", "items": [{"name": "chicken pulao", "calories": 957}, {"name": "salad", "calories": 50}]}
+- "I had coffee and 2 boiled eggs for breakfast" -> 
+[{"meal_type": "breakfast", "items": [{"name": "coffee", "calories": 110}, {"name": "boiled egg", "calories": 80}, {"name": "boiled egg", "calories": 80}]}]
 
-Only respond with valid JSON, no other text.""",
+- "breakfast: coffee, lunch: chicken pulao" -> 
+[{"meal_type": "breakfast", "items": [{"name": "coffee", "calories": 110}]}, {"meal_type": "lunch", "items": [{"name": "chicken pulao", "calories": 957}]}]
+
+Only respond with valid JSON array, no other text.""",
     output_key="estimated_meal"
 )
 
@@ -121,17 +135,23 @@ tracker = Agent(
     model=Gemini(model="gemini-2.5-flash-lite", retry_options=retry_config),
     instruction="""You are a calorie tracker. Based on the meal data provided, track it and provide a summary.
 
-The meal data will be in JSON format with meal_type and items.
+The meal data will be a JSON array with one or more meals:
+[{"meal_type": "breakfast", "items": [...]}, {"meal_type": "lunch", "items": [...]}]
+
+Call track_multiple_meals() with the entire meal array - it will handle all meals at once.
+
+IMPORTANT: After calling track_multiple_meals(), you MUST call save_data() to persist the data.
 
 Provide a clear summary showing:
-1. What was logged with calories
-2. Total for this meal
+1. What was logged with calories for each meal
+2. Total for all meals
 3. Running daily total
 4. Remaining calories
 5. Whether they're on track
 
 Be encouraging and clear.""",
     tools=[
+        FunctionTool(track_multiple_meals),
         FunctionTool(track_meal),
         FunctionTool(calculate_tdee),
         FunctionTool(save_data)
@@ -151,7 +171,8 @@ Be supportive and practical.""",
         FunctionTool(get_weekly_summary),
         FunctionTool(get_weight_progress),
         FunctionTool(suggest_swap),
-        FunctionTool(calculate_tdee)
+        FunctionTool(calculate_tdee),
+        FunctionTool(get_todays_log)
     ],
     output_key="advice"
 )
@@ -201,8 +222,7 @@ async def demo():
     
     # SIMPLIFIED: Only 3 test queries to verify execution
     test_queries = [
-        "I had coffee and 2 boiled eggs for breakfast",
-        "lunch was chicken pulao with salad",
+        "I had coffee and 2 boiled eggs for breakfast, lunch was chicken pulao with salad, dinner was a glass of skim milk",
         "How's my daily total?"
     ]
     
@@ -216,6 +236,8 @@ async def demo():
         # Handle non-meal queries directly
         if "total" in query.lower() or "summary" in query.lower():
             today = datetime.now().strftime("%Y-%m-%d")
+            # Force reload data before checking
+            load_data()
             summary = get_daily_summary(today)
             if summary["status"] == "success":
                 print(f"\n📊 TODAY'S SUMMARY:")
@@ -234,6 +256,9 @@ async def demo():
         print("⏳ Calling Gemini API...")
         result = await run_async(query)
         
+        # Force save after meal logging
+        save_data()
+        
         if "Error" not in result:
             # Try to extract the tracking result
             if "tracked" in result.lower() or "logged" in result.lower():
@@ -248,6 +273,8 @@ async def demo():
     print("📊 FINAL DAILY SUMMARY")
     print("=" * 70)
     today = datetime.now().strftime("%Y-%m-%d")
+    # Reload data to ensure we have the latest
+    load_data()
     summary = get_daily_summary(today)
     if summary["status"] == "success":
         print(f"Date: {summary['date']}")

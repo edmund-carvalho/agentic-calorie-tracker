@@ -27,8 +27,10 @@ def save_data(filepath: str = "data/daily_log.json") -> bool:
     except Exception:
         return False
 
-def track_meal(date: str, meal_type: str, items: list) -> dict:
-    """Store meal in daily log"""
+def track_meal(meal_type: str, items: list) -> dict:
+    """Store a single meal in daily log using today's date"""
+    date = datetime.now().strftime("%Y-%m-%d")
+    
     if date not in DAILY_LOG:
         DAILY_LOG[date] = {"meals": [], "total": 0}
     
@@ -55,6 +57,61 @@ def track_meal(date: str, meal_type: str, items: list) -> dict:
         "items": items,
         "date": date
     }
+
+def track_multiple_meals(meals: list) -> dict:
+    """Store multiple meals in daily log using today's date"""
+    date = datetime.now().strftime("%Y-%m-%d")
+    
+    if date not in DAILY_LOG:
+        DAILY_LOG[date] = {"meals": [], "total": 0}
+    
+    total_calories = 0
+    for meal in meals:
+        meal_type = meal.get("meal_type", "snack")
+        items = meal.get("items", [])
+        meal_total = sum(item.get("calories", 0) for item in items)
+        total_calories += meal_total
+        
+        DAILY_LOG[date]["meals"].append({
+            "type": meal_type,
+            "items": items,
+            "total": meal_total,
+            "timestamp": datetime.now().isoformat()
+        })
+    
+    DAILY_LOG[date]["total"] += total_calories
+    
+    # Auto-save after tracking
+    save_data()
+    
+    from .calorie_tools import calculate_tdee
+    tdee_data = calculate_tdee()
+    
+    return {
+        "status": "success",
+        "meals_logged": len(meals),
+        "total_calories": total_calories,
+        "daily_total": DAILY_LOG[date]["total"],
+        "tdee": tdee_data["tdee"],
+        "remaining": tdee_data["tdee"] - DAILY_LOG[date]["total"],
+        "on_track": DAILY_LOG[date]["total"] <= tdee_data["tdee"],
+        "date": date
+    }
+
+def get_todays_log() -> dict:
+    """Get today's log entries"""
+    date = datetime.now().strftime("%Y-%m-%d")
+    if date in DAILY_LOG:
+        return DAILY_LOG[date]
+    return {"meals": [], "total": 0}
+
+def clear_todays_log() -> bool:
+    """Clear today's log entries"""
+    date = datetime.now().strftime("%Y-%m-%d")
+    if date in DAILY_LOG:
+        DAILY_LOG[date] = {"meals": [], "total": 0}
+        return True
+    return False
 
 # Load data on import
 load_data()

@@ -1,5 +1,6 @@
 from .tracking_tools import DAILY_LOG
 from .calorie_tools import calculate_tdee, USER_PROFILE
+from datetime import datetime
 
 def get_daily_summary(date: str) -> dict:
     """Get summary for a specific date"""
@@ -103,7 +104,7 @@ def suggest_swap(food_name: str) -> dict:
         return {
             "status": "partial",
             "message": f"No exact swap found for '{food_name}'. Did you mean: {', '.join(matches[:3])}?",
-            "suggestions": [{m: swaps[m] for m in matches[:3]}]
+            "suggestions": matches[:3]
         }
     
     return {
