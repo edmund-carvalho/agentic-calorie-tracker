@@ -1,5 +1,5 @@
 # 🍽️ Agentic Calorie Tracker
-![logo](images\logo.png)
+![logo](images/logo.png)
 Your Personal AI Nutritionist - A multi-agent system for intelligent calorie tracking and health management.
 
 ## 🏆 Capstone Project - Concierge Agents Track
