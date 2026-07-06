@@ -1,13 +1,13 @@
 ![logo](images/logo.jpg)
 
-# 🍽️ Agentic Calorie Tracker
+# Agentic Calorie Tracker
 Your Personal AI Nutritionist - A multi-agent system for intelligent calorie tracking and health management.
 
-## 🏆 Capstone Project - Concierge Agents Track
+## Capstone Project - Concierge Agents Track
 
 This project demonstrates a rudimentary AI agent system built with Google's Agent Development Kit (ADK) that helps users track their daily calorie intake using natural language.
 
-## 📋 Problem Statement
+## Problem Statement
 
 People struggle to track their daily calorie intake consistently because:
 
@@ -16,7 +16,7 @@ People struggle to track their daily calorie intake consistently because:
 - Most apps require exact food matching
 - Lack of personalized, contextual advice
 
-## 💡 Solution
+## Solution
 
 An AI-powered calorie tracking assistant that:
 
@@ -27,7 +27,7 @@ An AI-powered calorie tracking assistant that:
 - Shows progress toward weight goals
 - Uses multi-agent architecture for reliable, scalable tracking
 
-## 🏗️ Architecture
+##  Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -37,10 +37,10 @@ An AI-powered calorie tracking assistant that:
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
 │              PARALLEL PROCESSING                            │
-│  ┌────────────────────┐  ┌─────────────────────────────┐   │
-│  │  Food Estimator    │  │  Query Classifier           │   │
-│  │  (LLM Agent)       │  │  (LLM Agent)                │   │
-│  └────────────────────┘  └─────────────────────────────┘   │
+│  ┌────────────────────┐  ┌─────────────────────────────┐    │
+│  │  Food Estimator    │  │  Query Classifier           │    │
+│  │  (LLM Agent)       │  │  (LLM Agent)                │    │
+│  └────────────────────┘  └─────────────────────────────┘    │
 └─────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
@@ -55,21 +55,21 @@ An AI-powered calorie tracking assistant that:
                               ↓
 ┌─────────────────────────────────────────────────────────────┐
 │                 USER RESPONSE                               │
-│  "Logged breakfast: 270 kcal. Daily total: 270/2300.       │
-│   Remaining: 2030 kcal. Great start! 💪"                   │
+│  "Logged breakfast: 270 kcal. Daily total: 270/2300.        │
+│   Remaining: 2030 kcal. Great start! "                      │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## 🎯 Key Concepts Demonstrated
+## Key Concepts Demonstrated
 
-- ✅ **Multi-Agent System** (ADK) - Sequential, Parallel, and Loop agents
-- ✅ **Function Tools** - Custom Python functions as agent tools
-- ✅ **Agent Tools** - Agents calling other agents
-- ✅ **Security Features** - No hardcoded API keys, local data storage
-- ✅ **Deployability** - Runs locally, in Kaggle, or Streamlit
-- ✅ **Agent Skills** - ADK CLI tools (create, run, web)
+- **Multi-Agent System** (ADK) - Sequential, Parallel, and Loop agents
+- **Function Tools** - Custom Python functions as agent tools
+- **Agent Tools** - Agents calling other agents
+- **Security Features** - No hardcoded API keys, local data storage
+- **Deployability** - Runs locally, in Kaggle, or Streamlit
+- **Agent Skills** - ADK CLI tools (create, run, web)
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -105,24 +105,24 @@ python agent.py
 streamlit run ui/app.py
 ```
 
-## 📊 Demo Output
+## Demo Output
 ```
-🍽️ AGENTIC CALORIE TRACKER
-🏆 Kaggle Capstone Project - Concierge Agents Track
+ AGENTIC CALORIE TRACKER
+ Kaggle Capstone Project - Concierge Agents Track
 ======================================================================
 
-📊 USER PROFILE:
+ USER PROFILE:
    Current Weight: 77.55 kg
    Target Weight: 70 kg
    TDEE: 2300 kcal/day
    Progress: 13.65 kg lost (86.76% to goal)
 
 ──────────────────────────────────────────────────────────────────────
-📝 TEST 1: I had coffee and 2 boiled eggs for breakfast
+ TEST 1: I had coffee and 2 boiled eggs for breakfast
 ──────────────────────────────────────────────────────────────────────
 
-📝 Logged breakfast: 270 kcal. Daily total: 270/2300. 
-    Remaining: 2030 kcal. Great start! 💪
+ Logged breakfast: 270 kcal. Daily total: 270/2300. 
+    Remaining: 2030 kcal. Great start! 
 ```
 
 
@@ -134,7 +134,7 @@ streamlit run ui/app.py
 
 
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 calorie-tracker-agent/
@@ -161,7 +161,7 @@ calorie-tracker-agent/
 └── README.md
 ```
 
-## 🔐 Security
+## Security
 
 This project handles your personal data securely:
 
@@ -183,7 +183,7 @@ This project handles your personal data securely:
    GOOGLE_API_KEY=your_actual_api_key_here
    ```
 
-## 💻 Technology Stack
+## Technology Stack
 
 - **Framework**: Google ADK (Agent Development Kit)
 - **LLM**: Gemini 2.5 Flash Lite
@@ -191,7 +191,7 @@ This project handles your personal data securely:
 - **Language**: Python 3.11+
 - **Data Storage**: Local JSON files
 
-## 🔮 Future Enhancements
+## Future Enhancements
 
 - [ ] MCP Server integration with fitness trackers (Fitbit, Apple Health)
 - [ ] Recipe suggestions based on remaining calories
@@ -199,26 +199,26 @@ This project handles your personal data securely:
 - [ ] Meal planning recommendations
 - [ ] Nutrition breakdown (protein, carbs, fat)
 
-## 📝 License
+## License
 
 MIT License - See LICENSE file for details
 
-## 👤 Author
+## Author
 
 Your Name
 - GitHub: [@edmund-carvalho](https://github.com/edmund-carvalho)
 - LinkedIn: [edmund-carvalho](https://www.linkedin.com/in/edmundcarvalho/)
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Google Agent Development Kit (ADK)
 - Kaggle 5-Day AI Agents Course
 - Gemini API
 - Streamlit
 
-## ⭐ Support
+## Support
 
-If you find this project useful, please give it a star! ⭐
+If you find this project useful, please give it a star!
 
 
 
