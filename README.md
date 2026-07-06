@@ -1,5 +1,6 @@
+![logo](images/logo.jpg)
+
 # 🍽️ Agentic Calorie Tracker
-![logo](images/logo.png)
 Your Personal AI Nutritionist - A multi-agent system for intelligent calorie tracking and health management.
 
 ## 🏆 Capstone Project - Concierge Agents Track
@@ -105,7 +106,6 @@ streamlit run ui/app.py
 ```
 
 ## 📊 Demo Output
-
 ```
 🍽️ AGENTIC CALORIE TRACKER
 🏆 Kaggle Capstone Project - Concierge Agents Track
@@ -124,6 +124,15 @@ streamlit run ui/app.py
 📝 Logged breakfast: 270 kcal. Daily total: 270/2300. 
     Remaining: 2030 kcal. Great start! 💪
 ```
+
+
+![screen1](images/screenshot.png)
+
+
+![screen2](images/ui_screenshot.png)
+
+
+
 
 ## 📁 Project Structure
 
